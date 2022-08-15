@@ -1,8 +1,8 @@
 import argparse
 import logging
+
 from bs4 import BeautifulSoup 
 import requests
-
 
 logger = None
 
@@ -30,6 +30,14 @@ def get_artists(artists):
         if link.find('img') not in link:
             logger.info(link.text)
 
+def get_artists_songs(artists_songs):
+    resp = requests.get(artists_songs)
+    soup = BeautifulSoup(resp.content, "lxml")
+    song_lists = soup.find("table", attrs = {"class" : "tracklist"})
+    song_list = song_lists.find_all('a')
+    for list in song_list:
+        logger.info(list.text)
+
 def main():
     args = parse_args()
     if args.debug:
@@ -37,6 +45,7 @@ def main():
     else:
         configure_logging(logging.INFO)
     get_artists('https://www.songlyrics.com/top-artists-lyrics.html')
-
+    get_artists_songs("http://www.songlyrics.com/katy-perry-lyrics/")
+    
 if __name__=="__main__":
     main()
