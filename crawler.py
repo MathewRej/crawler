@@ -38,6 +38,12 @@ def get_artists_songs(artists_songs):
     for list in song_list:
         logger.info(list.text)
 
+def get_atrists_song_lyrics(song_lyrics):
+    resp = requests.get(song_lyrics)
+    soup = BeautifulSoup(resp.content, "lxml")
+    lyrics = soup.find('p', attrs = {"id" : "songLyricsDiv"})
+    logger.info(lyrics.text)
+
 def main():
     args = parse_args()
     if args.debug:
@@ -46,6 +52,6 @@ def main():
         configure_logging(logging.INFO)
     get_artists('https://www.songlyrics.com/top-artists-lyrics.html')
     get_artists_songs("http://www.songlyrics.com/katy-perry-lyrics/")
-    
+    get_atrists_song_lyrics('http://www.songlyrics.com/katy-perry/roar-single-lyrics/')
 if __name__=="__main__":
     main()
