@@ -1,5 +1,7 @@
 import argparse
 import logging
+import os
+from socket import SO_LINGER
 
 from bs4 import BeautifulSoup 
 import requests
@@ -9,6 +11,7 @@ logger = None
 def parse_args():
     parser = argparse.ArgumentParser(description = "web crawler")
     parser.add_argument("-d", "--debug", help = "Enable debug logging", action = "store_true")
+    parser.add_argument("-download", help = "creates a directory for lyrics", action = "store")
     return parser.parse_args()
 
 def configure_logging(level = logging.INFO):
@@ -21,28 +24,43 @@ def configure_logging(level = logging.INFO):
     screen_handler.setFormatter(formatter)
     logger.addHandler(screen_handler)
 
-def get_artists(artists):
+def get_artists(base):
+    artists = {}
+    resp = requests.get(base)
+    soup = BeautifulSoup(resp.content, "lxml")
+    track_lists = soup.find("table", attrs = {"class" : "tracklist"})
+    track_link = track_lists.find_all('h3')
+    for link in track_link[:5]:
+        artists[link.text] = link.a['href']
+    return artists
+    
+def get_artist_songs(artists):
+    songs = {}
     resp = requests.get(artists)
     soup = BeautifulSoup(resp.content, "lxml")
-    track_list = soup.find("table", attrs = {"class" : "tracklist"})
-    track_link = track_list.find_all('a')
-    for link in track_link:
-        if link.find('img') not in link:
-            logger.info(link.text)
+    song_list = soup.find("table", attrs = {"class" : "tracklist"})
+    songs_links = song_list.find_all('a')
+    for song in songs_links[:3]:
+        songs[song.text] = song['href']
 
-def get_artists_songs(artists_songs):
-    resp = requests.get(artists_songs)
-    soup = BeautifulSoup(resp.content, "lxml")
-    song_lists = soup.find("table", attrs = {"class" : "tracklist"})
-    song_list = song_lists.find_all('a')
-    for list in song_list:
-        logger.info(list.text)
+    return songs
 
-def get_atrists_song_lyrics(song_lyrics):
+def get_artists_song_lyrics(song_lyrics):
     resp = requests.get(song_lyrics)
     soup = BeautifulSoup(resp.content, "lxml")
     lyrics = soup.find('p', attrs = {"id" : "songLyricsDiv"})
-    logger.info(lyrics.text)
+    return lyrics.text
+
+def crawl(download_dir):
+    for artist_name, artist_link in get_artists('http://www.songlyrics.com/top-artists-lyrics.html').items():
+        logger.debug("Artist : %s", artist_name)
+        artist_dir = os.path.join(download_dir, artist_name)
+        os.makedirs(artist_dir, exist_ok = True)
+        for song, song_link in get_artist_songs(artist_link).items():
+            song_name = song.replace("/", " ")
+            file = open(f"{artist_dir}/{song_name}.txt", "w")
+            file.write(get_artists_song_lyrics(song_link))
+            file.close()
 
 def main():
     args = parse_args()
@@ -50,8 +68,7 @@ def main():
         configure_logging(logging.DEBUG)
     else:
         configure_logging(logging.INFO)
-    get_artists('https://www.songlyrics.com/top-artists-lyrics.html')
-    get_artists_songs("http://www.songlyrics.com/katy-perry-lyrics/")
-    get_atrists_song_lyrics('http://www.songlyrics.com/katy-perry/roar-single-lyrics/')
+    crawl("artists")
+
 if __name__=="__main__":
     main()
