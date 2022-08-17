@@ -1,7 +1,7 @@
 import argparse
 import logging
 import os
-from socket import SO_LINGER
+
 
 from bs4 import BeautifulSoup 
 import requests
@@ -42,7 +42,6 @@ def get_artist_songs(artists):
     songs_links = song_list.find_all('a')
     for song in songs_links[:3]:
         songs[song.text] = song['href']
-
     return songs
 
 def get_artists_song_lyrics(song_lyrics):
