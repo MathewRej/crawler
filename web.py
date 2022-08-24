@@ -1,4 +1,4 @@
-from flask import Flask,url_for
+from flask import Flask,url_for,render_template
 from flask_sqlalchemy import SQLAlchemy
 
 
@@ -29,18 +29,33 @@ class Songs(db.Model):
 @app.route("/")
 def index():
     artists = Artists.query.all()
-    formatted = []
-    for artist in artists:
-        target = url_for("artist", artistid = artist.id)
-        link = f'<a href = "{target}">{artist.name}</a>'
-        formatted.append(f"<li>{link}</li>")
-    return "<ul>" + "".join(formatted) + "</ul>"
+    # formatted = []
+    # for artist in artists:
+    #     target = url_for("artist", artist_id = artist.id)
+    #     link = f'<a href = "{target}">{artist.name}</a>'
+    #     formatted.append(f"<li>{link}</li>")
+    #     artists = "".join(formatted)
+    #     print(artists)
+    return render_template('artists.html', artists = artists)
 
-@app.route("/artist/<int:artistid>")
+@app.route("/artist/<int:artist_id>")
+def artist(artist_id):
+    songs = Songs.query.filter_by(artist_id = artist_id).all()
+    artist = Artists.query.get(artist_id)
+    # formatted = []
+    # for i in songs:
+    #     target = url_for("song", song_id = i.id)
+    #     link = f'<a href = "{target}">{i.name}</a>'
+    #     formatted.append(f"<li>{link}</li>")
+    #     songs = "".join(formatted)
+    # return "<ul>" + "".join(formatted) + "</ul>"
+    return render_template('songs.html',artist = artist.name, songs = songs)
 
 @app.route("/song/<int:song_id>")
 def song(song_id):
-    return f"<p> I got {song_id} </p>"
+    song = Songs.query.filter_by(id = song_id).first()
+    lyrics = song.lyrics.replace("\n","<br>")
+    return render_template('lyrics.html', song_name =song.name, lyrics=lyrics)  
 
 
 

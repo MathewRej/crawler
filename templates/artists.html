@@ -1,0 +1,13 @@
+{%extends "base.html"%}
+    {% block content %}
+    <div>
+    <h2>Artists</h2>
+    
+        <ol>
+        {% for artist in artists %}
+        <a class = "url_" href="{{url_for("artist", artist_id = artist.id)}}"><li class = "songslist">{{artist.name}}</li></a>
+        {% endfor %}
+        </ol>
+    </div>
+    {%endblock%}
+  
