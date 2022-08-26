@@ -1,0 +1,73 @@
+h1{
+    color:blue;
+}
+a{
+    text-decoration: none !important;
+    margin: 5px;
+}
+li.songlist{
+    color:black;
+    border-top: ridge;
+    margin: 10px
+
+}
+ol{
+    margin-top: 40px;
+}
+h1.main_h1{
+    color: black;
+}
+h2.headng2{
+    margin-left: 30px;
+}
+.artists-div{
+    color: black;
+}
+.songname-h{
+    color: rgb(2, 2, 129);
+    margin-left: 30px;
+
+}
+div.sidebar{
+    background-color: rgb(193, 138, 255);
+    border-right: solid 2px black;
+}
+div.maincontent{
+    border-top: solid 2px black;
+}
+p.lead{
+    margin: 20px;
+    color: rgb(87, 87, 87);
+}
+div.main-div{
+    margin: 0px;
+}
+li.songslist-div{
+    color:black;
+    margin: 10px;
+    border-bottom-style: double;
+}
+div.button-div{
+    text-align: center;
+}
+.btn{
+    height: 40px;
+    width: 50px;
+    background-color: rgb(0, 0, 0) !important;
+    border-color: aliceblue !important;
+}
+h6.copyr-h{
+    text-align: right;
+}
+a.url-lyrics{
+    color: black;
+}
+a.url-songs{
+    color: rgb(2, 2, 129);
+}
+a.url-artist{
+    color: rgb(2, 2, 129);
+}
+body{
+    background-color: #fcf0ff !important;
+}
