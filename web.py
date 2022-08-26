@@ -54,8 +54,6 @@ def artist(artist_id):
 @app.route("/song/<int:song_id>")
 def song(song_id):
     song = Songs.query.filter_by(id = song_id).first()
+    songs = Songs.query.filter_by(artist_id = song.artist_id).all()
     lyrics = song.lyrics.replace("\n","<br>")
-    return render_template('lyrics.html', song_name =song.name, lyrics=lyrics)  
-
-
-
+    return render_template('lyrics.html', songs=songs,song_name = song.name,artist_name = song.artist.name,lyrics=lyrics)  

@@ -1,11 +1,20 @@
+
 {%extends "base.html"%}
-    {% block content %}
-        <h1>{{artist}} Songs</h1>
-            <div>
-                <ol>
-                    {% for song in songs %}
-                    <a class="url_" href ="{{url_for("song", song_id = song.id)}}"><li class = "songslist">{{song.name}}</li></a>
-                    {% endfor %}
-                </ol>
-            </div>
+    {%block songs%}
+    <p class="lead">
+        We regualarly crawl various sites on the net to get you the freshest lyrics out there. These are available classified using the artist name.
+    </p>
+    
     {%endblock%}
+    {%block content%}
+    <h2 class="songname-h">{{artist}} Songs</h2>
+    <div>
+        <ol>
+            {% for song in songs %}
+            <li class = "songslist"><a class="url-songs" href ="{{url_for("song", song_id = song.id)}}">{{song.name}}</a></li>
+            {% endfor %}
+        </ol>
+        
+    </div>
+    {%endblock%}
+   
