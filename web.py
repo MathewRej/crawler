@@ -1,6 +1,6 @@
-from flask import Flask,url_for,render_template
+from flask import Flask,url_for,render_template,jsonify
 from flask_sqlalchemy import SQLAlchemy
-
+from flask_accept import accept
 
 app = Flask("lyrics")
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///lyrics'
@@ -52,8 +52,25 @@ def artist(artist_id):
     return render_template('songs.html',artist = artist.name, songs = songs)
 
 @app.route("/song/<int:song_id>")
+@accept("text/html")
 def song(song_id):
     song = Songs.query.filter_by(id = song_id).first()
-    songs = Songs.query.filter_by(artist_id = song.artist_id).all()
-    lyrics = song.lyrics.replace("\n","<br>")
-    return render_template('lyrics.html', songs=songs,song_name = song.name,artist_name = song.artist.name,lyrics=lyrics)  
+    songs = song.artist.songs
+    return render_template('lyrics.html', song=song, songs =songs)
+
+# @app.route("/lyrics/<int:song_id>")
+# def lyrics(song_id):
+#     time.sleep(3)
+#     song = Songs.query.filter_by(id = song_id).first()
+#     return render_template("lyricsblock.html", songs = song)
+
+@song.support("application/json")
+def song_json(song_id):
+    print("I am returning json!")
+    song = Songs.query.filter_by(id = song_id).first()
+    ret = dict(song = dict(name = song.name,
+                           lyrics = song.lyrics, 
+                           id = song.id, 
+                           artist = dict(name = song.artist.name, 
+                                         id = song.artist.id)))
+    return jsonify(ret)

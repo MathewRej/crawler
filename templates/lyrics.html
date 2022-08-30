@@ -1,22 +1,26 @@
 {%extends "base.html"%}
 {%block songs%}
     <div>
-        <h2 class="songname-h">{{artist_name}} Songs</h2>
+        <h2 class="songname-h">{{song.artist.name}} Songs</h2>
         <ol>
-            {% for song in songs %}
-            <li class = "songslist-div"><a class="url-lyrics" href ="{{url_for("song", song_id = song.id)}}">{{song.name}}</a></li>
+            {% for s in songs %}
+            {% if s.id == song.id %}
+            <li id="{{s.id}}" class="songname">{{s.name}}</li>
+            {% else %}
+            <li id="{{s.id}}" class="songslink"> <a class="songlink" href="{{url_for('song', song_id = s.id)}}">{{s.name}}</a></li>
+            {% endif %}
             {% endfor %}
         </ol>
-        
     </div>
 {%endblock%}
-{%block content%}
-   
-    <center><h2 class="songname-h">{{song_name}}</h></center>
-    <div>
+{% block content %}
+<div class="lyrics">
+    <p>
+      <h4>Lyrics for {{song.name}}</h4>
         {% autoescape off %}
-        <em><center>{{lyrics}}</center></em>
-        {% endautoescape %}
-    </div>
-{%endblock%}
+      <em><center>{{song.lyrics.replace("\n", "<br/>")}}</center></em>
+      {% endautoescape %}
+    </p>
+</div>
+{% endblock %}
    
