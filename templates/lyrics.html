@@ -7,7 +7,9 @@
             {% if s.id == song.id %}
             <li id="{{s.id}}" class="songname">{{s.name}}</li>
             {% else %}
-            <li id="{{s.id}}" class="songslink"> <a class="songlink" href="{{url_for('song', song_id = s.id)}}">{{s.name}}</a></li>
+            <li id="{{s.id}}" class="songslink"> 
+              <a class="songlink" href="{{url_for('song', song_id = s.id)}}">{{s.name}}</a>
+            </li>
             {% endif %}
             {% endfor %}
         </ol>
