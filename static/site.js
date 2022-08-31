@@ -9,39 +9,35 @@ function build_lyrics(lyrics) {
     return ret;
 }
 
-function main(){
+function main() {
     console.log("Hello!!!!!")
-    
-    $("a.songlink").click(function (ev){
-        console.log(ev)
-        ev.target.href.replace(ev.target.innerText)
-        // url = ev.target.href.replace("/song/","/lyrics/")
-        $("div.lyrics").text("Loading......")
-        $.ajax({
-            url: ev.target.href,
-            dataType: 'json',
-            success: function(data, textStatus, jqXHR){
+    $("a.songlink").click(myFunc)
+};
+
+
+
+function myFunc(ev) {
+    ev.preventDefault();
+    $("div.lyrics").text("Loading......")
+    $.ajax({
+        url: ev.target.href,
+        dataType: 'json',
+        success: function (data, textStatus, jqXHR) {
             $("div.lyrics").html(build_lyrics(data.song));
             var text = ev.target.innerText;
-                    var parent = ev.target.parentNode;
-                    ev.target.remove(); 
-                    $(parent).html(text)
-                    $(".songname").html(`<a
-                    class = "songlink" href="/song/${$(".songname").attr("id")}">${$(".songname").text()}<a/>`)
-                    
-                    // var link = ev.target.href
-                    
-
-                //    $("li.songname").wrap('<a href="' + ev.target.href + '"></a>')
-                
-            }
+            var parent = ev.target.parentNode;
+            $(parent).html(text)
+            $(".songname")
+                .html(`<a class = "songlink" href="/song/${$(".songname")
+                .attr("id")}">${$(".songname").text()}<a/>`);
+            $(".songname a").click(myFunc);
+            $(".songname").attr("class", "songslink");
+            $(parent).attr("class", "songname");
             
-        }) 
-        
-        ev.preventDefault();
-    });
-
+        }
+    })
 }
+
 $(main);
 
 
